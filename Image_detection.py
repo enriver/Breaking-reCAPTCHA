@@ -34,7 +34,8 @@ class Image_detection():
         self.date=date
 
     def yoloV3(self,address):
-        input_size = 416
+        img=Image.open(address)
+        input_size = img.size[0]
         image_path = address
 
         input_layer = tf.keras.layers.Input([input_size, input_size, 3])
@@ -63,7 +64,6 @@ class Image_detection():
         bboxes = utils.nms(bboxes, 0.45, method='nms')
 
         # 이미지 그리드 분할
-        img=Image.open(image_path)
         (img_h, img_w)=img.size
         grid_h,grid_w=100,100
 

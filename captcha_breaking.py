@@ -1,11 +1,7 @@
 from selenium import webdriver
-#from selenium.webdriver.common.by import By
-#from selenium.webdriver.support.ui import WebDriverWait
-#from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 from Image_detection import *
-import random
 import urllib.request
 
 # 캡챠 이미지 영역으로 이동
@@ -107,6 +103,8 @@ if __name__=="__main__":
         alertText=driver.find_element_by_xpath("/html/body/div/div/div[2]/div[5]")
         print("Alert Text : "+alertText.text+"\n")
         i+=1
+
+        del imgDetect
       
 
     print("끝")
