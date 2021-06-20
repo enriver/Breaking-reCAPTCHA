@@ -103,8 +103,6 @@ if __name__=="__main__":
         alertText=driver.find_element_by_xpath("/html/body/div/div/div[2]/div[5]")
         print("Alert Text : "+alertText.text+"\n")
         i+=1
-
-        del imgDetect
       
 
     print("끝")
