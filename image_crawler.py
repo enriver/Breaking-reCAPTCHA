@@ -66,6 +66,7 @@ if __name__=="__main__":
                     f.write(img)
                     print("캡챠 이미지를 저장하였습니다\n")
             else:
+                time.sleep(3)
                 isStore=True
 
         except:
@@ -96,7 +97,10 @@ if __name__=="__main__":
             btn.click()
 
             alertText=driver.find_element_by_xpath("/html/body/div/div/div[2]/div[5]")
-            if alertText.text=="새 이미지도 확인해주세요":
+            print(alertText.text)
+            if alertText.text=="새 이미지도 확인해 보세요.":
+                isStore=False
+            elif alertText.text=="다시 시도해 주세요.":
                 isStore=False
 
             i+=1
