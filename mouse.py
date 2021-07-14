@@ -18,7 +18,7 @@ if __name__=="__main__":
     print('그리드의 크기(가로x세로) : ',grid_x,'X',grid_y)
 
     # 방문 체크
-    grid=[[False for _ in range(window_width)] for _ in range(window_height)]
+    grid=[[False for _ in range(window_width+1)] for _ in range(window_height+1)]
 
     # 첫 마우스 포인터 위치 랜덤 배치
     mouse_x=randint(0,grid_x)*n
@@ -67,6 +67,8 @@ if __name__=="__main__":
                 grid[mouse_y][mouse_x]=True
 
                 pyautogui.moveTo(mouse_x,mouse_y,1)
+                #pyautogui.dragTo(mouse_x,mouse_y,1,button='left')
+                #pyautogui.hotkey('ctrl','c')
                 moved=1
 
                 new_distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
