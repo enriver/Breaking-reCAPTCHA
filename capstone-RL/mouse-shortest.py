@@ -4,85 +4,100 @@ import pyautogui
 import sys
 from random import randint
 
+# action
+action=[[0,-1], # 상
+        [0,1],  # 하
+        [-1,0], # 좌
+        [1,0]]  # 우
+
+action_dict={0:'(상)', 1:'(하)', 2:'(좌)', 3:'(우)'}
+
+
+
 if __name__=="__main__":
    # 화면 전체 크기 확인하기
     window_size=pyautogui.size()
-    print('화면 크기 :',window_size,'\n')
+    print('화면 크기 :',window_size)
 
     window_width, window_height=window_size[0],window_size[1]
 
     # 그리드 설정
-    print('■■■■ Cell 간 간격을 입력하세요 ■■■■')
-    n=int(sys.stdin.readline())
+    print('Cell 간 간격 : 100')
+    n=100
     grid_x=window_width//n
     grid_y=window_height//n
     
-    print('그리드의 크기(가로x세로) : ',grid_x,'X',grid_y)
+    print('그리드의 크기(가로x세로) : ',grid_x,'X',grid_y,'\n')
 
-    # 방문 체크
-    grid=[[False for _ in range(window_width+1)] for _ in range(window_height+1)]
-
-    # 첫 마우스 포인터 위치 랜덤 배치
-    mouse_x=randint(0,grid_x)*n
-    mouse_y=randint(0,grid_y)*n
-
-    pyautogui.moveTo(mouse_x, mouse_y)
-    grid[mouse_y][mouse_x]=True
-    print('첫 마우스 시작 포인트 (',mouse_x,',',mouse_y,')')
-
-    # 목표 지점 랜덤 설정
-    target_x=randint(0,grid_x)*n
-    target_y=randint(0,grid_y)*n
-    print('목표 지점 (',target_x,',',target_y,')')
-
-    # action
-    action=[[n,0], # 좌
-            [-n,0], # 우
-            [0,n], # 하
-            [0,-n]] # 상
-
-    moved=1
+    # 누적 비용 확인
+    rewardMap=[[0 for _ in range(grid_x+1)] for _ in range(grid_y+1)]
     reward=0
-    distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
+    rewardMap[1][1]=reward
 
-    i=1
-    while True:
-        if grid[target_y][target_x]:
-            print('목표지점에 도착')
-            print('누적 보상 : ',reward)
-            sys.exit(0)
+    num=1
+    while num<=20: # 전체 10번의 학습으로 costMap을 산출
+        reward=0
+        print('■■■■■■ '+str(num)+'번째 학습 ■■■■■■')
 
-        if moved==4:
-            print('더이상 움직일 수 없습니다')
-            print('누적 보상 : ',reward)
-            break
+        # 첫 마우스 포인터 위치 (10,10) 시작 - pyautogui 는 코너에서의 움직임을 제한함
+        mouse_x=100
+        mouse_y=100
 
-        a=randint(0,3)
+        print('첫 마우스 시작 포인트 (',mouse_x,',',mouse_y,')')
+        pyautogui.moveTo(mouse_x, mouse_y) # 시작점으로의 이동
 
-        print('[',str(i),'] - ',str(moved),'번째 시도')
-        moved+=1
+        grid=[[False for _ in range(grid_x+1)] for _ in range(grid_y+1)] # 방문 체크
+        x,y=1,1
+        grid[y][x]=True
+        
 
-        if 0<=mouse_x+action[a][0]<=window_width and 0<=mouse_y+action[a][1]<=window_height:
-            if not grid[mouse_y+action[a][1]][mouse_x+action[a][0]]:
-                mouse_x+=action[a][0]
-                mouse_y+=action[a][1]
-                grid[mouse_y][mouse_x]=True
+        # 목표 지점 랜덤 설정
+        '''
+        target_x=randint(0,grid_x)*n
+        target_y=randint(0,grid_y)*n
+        '''
+        target_x=grid_x*n
+        target_y=grid_y*n
+        print('목표 지점 (',target_x,',',target_y,')')
 
-                pyautogui.moveTo(mouse_x,mouse_y,1)
-                #pyautogui.dragTo(mouse_x,mouse_y,1,button='left')
-                #pyautogui.hotkey('ctrl','c')
-                moved=1
+        distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
 
-                new_distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
+        #i=1
+        while True:
+            if grid[target_y//n][target_x//n]:
+                print('목표지점에 도착, 누적 비용 : ',reward,'\n')
+                break
 
-                if distance < new_distance : # 멀어졌다면
-                    reward-=1
-                else: # 가까워졌다면
-                    reward+=1
+            a=randint(0,3) # 상하좌우 움직임
 
-                distance = new_distance
+            if 0<=x+action[a][0]<=grid_x and 0<=y+action[a][1] <= grid_y : # Grid 이내의 움직임일 경우
+                if not grid[y+action[a][1]][x+action[a][0]]: # 방문한적이 없다면
+                    grid[y+action[a][1]][x+action[a][0]]=True
 
-                print('=========================>>>',mouse_x,',',mouse_y,'이동, 보상 :',reward)
+                    # 움직임이 합리적인지 확인 (거리가 줄어드는지)
+                    mouse_x+=action[a][0]*n
+                    mouse_y+=action[a][1]*n
 
-        i+=1
+                    new_distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
+
+                    if distance >= new_distance : # 거리가 줄어들었다면 -> 합리적
+                        distance=new_distance
+
+                        x+=action[a][0]
+                        y+=action[a][1]
+
+                        reward-=1
+
+                        rewardMap[y][x]=min(rewardMap[y][x], reward)
+
+                        pyautogui.moveTo(mouse_x, mouse_y)
+
+                    else: # 거리가 줄어들지 않았다면
+                        mouse_x-=action[a][0]*n
+                        mouse_y-=action[a][1]*n
+
+        num+=1
+
+    for i in range(1,len(rewardMap)):
+        print(*rewardMap[i][1:])
     
