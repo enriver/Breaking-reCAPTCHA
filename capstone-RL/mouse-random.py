@@ -1,3 +1,5 @@
+# 상하좌우 랜덤으로 이동하는 마우스 포인터
+
 import pyautogui
 import sys
 from random import randint
