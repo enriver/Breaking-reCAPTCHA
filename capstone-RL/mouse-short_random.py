@@ -12,7 +12,7 @@ action=[[0,-1], # 상
 
 action_dict={0:'(상)', 1:'(하)', 2:'(좌)', 3:'(우)'}
 
-
+gamma=0.9
 
 if __name__=="__main__":
    # 화면 전체 크기 확인하기
@@ -110,7 +110,7 @@ if __name__=="__main__":
 
                             reward-=1
 
-                            rewardMap[y][x]=min(rewardMap[y][x], reward)
+                            rewardMap[y][x]=min(rewardMap[y][x], gamma*reward)
 
                             pyautogui.moveTo(mouse_x, mouse_y)
 
