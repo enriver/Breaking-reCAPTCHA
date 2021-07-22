@@ -63,10 +63,10 @@ if __name__=="__main__":
 
         distance=((mouse_x-target_x)**2+(mouse_y-target_y)**2)**(1/2)
 
-        #i=1
+        i=1
         while True:
             if grid[target_y//n][target_x//n]:
-                print('목표지점에 도착, 누적 비용 : ',reward,'\n')
+                print('목표지점에 도착, '+str(i)+'번 이동 \n')
                 break
 
             if first:
@@ -110,7 +110,7 @@ if __name__=="__main__":
 
                             reward-=1
 
-                            rewardMap[y][x]=min(rewardMap[y][x], gamma*reward)
+                            rewardMap[y][x]=round(min(rewardMap[y][x], gamma*reward),2)
 
                             pyautogui.moveTo(mouse_x, mouse_y)
 
@@ -119,7 +119,7 @@ if __name__=="__main__":
                             mouse_y-=action[a][1]*n
                 else:
                     grid[y+action[a][1]][x+action[a][0]]=False
-
+            i+=1
         num+=1
 
     for i in range(1,len(rewardMap)):
