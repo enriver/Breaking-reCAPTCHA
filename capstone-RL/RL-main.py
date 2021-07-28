@@ -27,9 +27,9 @@ if __name__=="__main__":
         
         for transition in history[::-1]:
             x,y,reward=transition
-            reward_grid[y][x]+=round(alpha*(cum_reward-reward_grid[y][x]),2)
+            reward_grid[y][x]+=alpha*(cum_reward-reward_grid[y][x])
             cum_reward+=gamma*reward
 
     # 결과
     for row in reward_grid:
-        print(row)
+        print([round(i,2) for i in row])

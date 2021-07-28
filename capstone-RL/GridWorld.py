@@ -13,8 +13,8 @@ class GridWorld():
         self.grid_x=self.width//self.cell
         self.grid_y=self.height//self.cell
 
-        self.mouse_x=10
-        self.mouse_y=10
+        self.mouse_x=15
+        self.mouse_y=80
 
         self.visit_grid=[[False for _ in range(self.grid_x+1)] for _ in range(self.grid_y+1)]
         self.visit_grid[self.y][self.x]=True
@@ -138,8 +138,8 @@ class GridWorld():
         self.x=0
         self.y=0
         
-        self.mouse_x=10
-        self.mouse_y=10
+        self.mouse_x=15
+        self.mouse_y=85
 
         self.visit_grid=[[False for _ in range(self.grid_x+1)] for _ in range(self.grid_y+1)]
         self.visit_grid[self.y][self.x]=True
